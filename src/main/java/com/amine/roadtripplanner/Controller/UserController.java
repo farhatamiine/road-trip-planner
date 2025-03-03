@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -31,6 +34,7 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Unauthorized access"),
             //@ApiResponse(responseCode = "429", description = "Too many requests")
     })
+
     @GetMapping("/email/{email}")
     @PreAuthorize("hasRole('ADMIN') or #email == authentication.principal.email")
     public ResponseEntity<UserResponse> getUserByEmail(@PathVariable @Email(message = "Email is not valid") String email) {
@@ -49,4 +53,13 @@ public class UserController {
                 .build();
         return ResponseEntity.ok(userResponse);
     }
+
+    /*public ResponseEntity<List<UserResponse>> getAllUsers() {
+        List<User> users = userService.findAllUsers();
+        List<User> userResponses = new ArrayList<>();
+        userResponses.addAll(users);
+        for (User user : users) {
+
+        }
+    }*/
 }

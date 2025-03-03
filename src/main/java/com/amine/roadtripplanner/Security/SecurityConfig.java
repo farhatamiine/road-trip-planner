@@ -61,10 +61,8 @@ public class SecurityConfig {
                         auth.requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/error").permitAll() // Add this line
                                 .requestMatchers("/api/public/**").permitAll()
-                                .requestMatchers("/swagger-ui/**").permitAll()  // This is the important one
-                                .requestMatchers("/swagger-ui.html").permitAll()  // This is the important one
-                                .requestMatchers("/v3/api-docs/**").permitAll()
-                                .requestMatchers("/swagger-resources/**").permitAll()
+                                .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**",
+                                        "/v3/api-docs/**", "/webjars/**").permitAll()
                                 .requestMatchers("/webjars/**").permitAll() // Add this line
                                 .anyRequest().authenticated()
                 );
