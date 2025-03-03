@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Document(collection="users")
+@Document(collection = "users")
 @Data
 @CompoundIndex(name = "email_username_idx", def = "{'email':1,'username':1}")
 @AllArgsConstructor
@@ -100,4 +100,5 @@ public class User implements UserDetails {
     public String getPassword() {
         return password;
     }
+
 }

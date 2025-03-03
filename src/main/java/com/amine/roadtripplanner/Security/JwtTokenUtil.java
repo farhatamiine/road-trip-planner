@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,10 +21,16 @@ public class JwtTokenUtil {
     @Value("${app.jwt.expiration}")
     private long jwtExpirationMs;
 
+    @Value("${app.jwt.secret}")
+    private String secret;
+
     private SecretKey secretKey;
 
-    private SecretKey getSigningKey() {
-        return Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private synchronized SecretKey getSigningKey() {
+        if (secretKey == null) {
+            secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        }
+        return secretKey;
     }
 
     // Generate JWT token
@@ -38,7 +45,7 @@ public class JwtTokenUtil {
                 .setSubject(subject)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(getSigningKey())
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 

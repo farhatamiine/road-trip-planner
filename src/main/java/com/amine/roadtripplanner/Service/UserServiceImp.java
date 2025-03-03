@@ -1,19 +1,29 @@
 package com.amine.roadtripplanner.Service;
 
 import com.amine.roadtripplanner.Entities.User;
+import com.amine.roadtripplanner.Exception.UserNotFoundException;
+import com.amine.roadtripplanner.Repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class UserServiceImp implements UserService {
+
+
+    private final UserRepository userRepository;
+
+    public UserServiceImp(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     /**
      * @param email
      * @return
      */
     @Override
     public User findUserByEmail(String email) {
-        return null;
+        return userRepository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException("email", email));
     }
 
     /**
