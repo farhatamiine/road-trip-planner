@@ -4,7 +4,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -27,7 +30,6 @@ import java.util.stream.Collectors;
 @CompoundIndex(name = "email_username_idx", def = "{'email':1,'username':1}")
 @AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Builder
 public class User implements UserDetails {
     @Id
@@ -54,8 +56,7 @@ public class User implements UserDetails {
     private String address;
     private String city;
     @DBRef(lazy = true)
-    @Builder.Default
-    private final List<Trip> tripList = new ArrayList<>();
+    private List<Trip> tripList = new ArrayList<>();
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate

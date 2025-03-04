@@ -2,6 +2,7 @@ package com.amine.roadtripplanner.Service;
 
 import com.amine.roadtripplanner.Entities.User;
 import com.amine.roadtripplanner.Exception.UserNotFoundException;
+import com.amine.roadtripplanner.Repositories.TripRepository;
 import com.amine.roadtripplanner.Repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +13,11 @@ public class UserServiceImp implements UserService {
 
 
     private final UserRepository userRepository;
+    private final TripRepository tripRepository;
 
-    public UserServiceImp(UserRepository userRepository) {
+    public UserServiceImp(UserRepository userRepository, TripRepository tripRepository) {
         this.userRepository = userRepository;
+        this.tripRepository = tripRepository;
     }
 
     /**
@@ -75,4 +78,6 @@ public class UserServiceImp implements UserService {
     public void deleteUser(int id) {
 
     }
+
+
 }
