@@ -5,7 +5,6 @@ import com.amine.roadtripplanner.Entities.Trip;
 import com.amine.roadtripplanner.enums.TripStatus;
 import lombok.Builder;
 import lombok.Data;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.time.LocalDate;
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
 @Data
 @Builder
 public class TripResponse {
-    private ObjectId tripId;
+    private String tripId;
     private String tripName;
     private String tripDescription;
     private LocalDate tripDate;
@@ -47,7 +46,7 @@ public class TripResponse {
                 null;
 
         return TripResponse.builder()
-                .tripId(trip.getTripId() != null ? trip.getTripId() : null)
+                .tripId(trip.getTripId() != null ? trip.getTripId().toString() : null)
                 .tripName(trip.getTripName())
                 .tripDescription(trip.getTripDescription())
                 .tripDate(trip.getTripDate())

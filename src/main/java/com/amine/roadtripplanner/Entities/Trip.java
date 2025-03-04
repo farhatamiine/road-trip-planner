@@ -25,7 +25,6 @@ public class Trip {
     private String tripDescription;
     @NonNull
     private LocalDate tripDate;
-    @NonNull
     private TripStatus tripStatus;
     @DBRef(lazy = true)
     private List<Segment> segmentList = new ArrayList<>();
