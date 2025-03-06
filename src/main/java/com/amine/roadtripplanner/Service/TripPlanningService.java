@@ -21,7 +21,7 @@ public interface TripPlanningService {
 
     Optional<TripResponse> getTripById(@NotNull ObjectId tripId);
 
-    Optional<TripResponse> updateTrip(Trip updatedTrip, ObjectId userId);
+    Optional<TripResponse> updateTrip(TripRequest updatedTrip, ObjectId tripId, ObjectId userId);
 
     Optional<TripResponse> partialUpdateTrip(ObjectId tripId, Map<String, Object> updates, ObjectId userId);
 }

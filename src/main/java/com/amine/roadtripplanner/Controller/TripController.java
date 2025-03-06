@@ -5,6 +5,7 @@ import com.amine.roadtripplanner.Dto.response.ApiResponseWrapper;
 import com.amine.roadtripplanner.Dto.response.TripResponse;
 import com.amine.roadtripplanner.Entities.Trip;
 import com.amine.roadtripplanner.Entities.User;
+import com.amine.roadtripplanner.Security.SecurityUtils;
 import com.amine.roadtripplanner.Service.TripPlanningService;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
@@ -22,9 +23,11 @@ import java.util.Optional;
 public class TripController {
 
     private final TripPlanningService tripPlanningService;
+    private final SecurityUtils securityUtils;
 
-    public TripController(TripPlanningService tripPlanningService) {
+    public TripController(TripPlanningService tripPlanningService, SecurityUtils securityUtils) {
         this.tripPlanningService = tripPlanningService;
+        this.securityUtils = securityUtils;
     }
 
 
@@ -68,19 +71,9 @@ public class TripController {
 
         ObjectId objectId = new ObjectId(tripId);
 
-        // Check if trip exists and belongs to current user
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
+        User currentUser = securityUtils.getCurrentUser();
 
-        Trip tripToUpdate = Trip.builder()
-                .tripId(objectId)
-                .tripName(request.getTripName())
-                .tripDescription(request.getTripDescription())
-                .tripDate(request.getTripDate())
-                .tripStatus(request.getTripStatus())
-                .build();
-
-        return tripPlanningService.updateTrip(tripToUpdate, currentUser.getUserId())
+        return tripPlanningService.updateTrip(request, objectId, currentUser.getUserId())
                 .map(updatedTrip -> ResponseEntity.ok(
                         ApiResponseWrapper.success(updatedTrip, "Trip updated successfully")))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -94,9 +87,7 @@ public class TripController {
 
         ObjectId objectId = new ObjectId(tripId);
 
-        // Get current user
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
+        User currentUser = securityUtils.getCurrentUser();
 
         return tripPlanningService.partialUpdateTrip(objectId, updates, currentUser.getUserId())
                 .map(updatedTrip -> ResponseEntity.ok(

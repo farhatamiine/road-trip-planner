@@ -104,27 +104,32 @@ public class TripPlanningServiceImp implements TripPlanningService {
 
     @Override
     @Transactional
-    public Optional<TripResponse> updateTrip(Trip updatedTrip, ObjectId userId) {
-        Optional<Trip> existingTripOpt = tripRepository.findById(updatedTrip.getTripId());
+    public Optional<TripResponse> updateTrip(TripRequest tripRequest, ObjectId tripId, ObjectId userId) {
 
+        // First verify the trip exists and belongs to the user
+        Optional<Trip> existingTripOpt = tripRepository.findById(tripId);
         if (existingTripOpt.isEmpty()) {
             return Optional.empty();
         }
 
+
         Trip existingTrip = existingTripOpt.get();
 
         // Check if user owns this trip
-        Optional<User> userOpt = userRepository.findById(userId);
-        if (userOpt.isEmpty() || userOpt.get().getTripList().stream()
-                .noneMatch(t -> t.getTripId().equals(updatedTrip.getTripId()))) {
+        // More efficient way to check ownership - use a query instead of loading all trips
+        boolean tripBelongsToUser = userRepository.existsByUserIdAndTripListContaining(userId, existingTrip);
+        if (!tripBelongsToUser) {
             return Optional.empty();
         }
 
-        // Keep the segments from existing trip
-        updatedTrip.setSegmentList(existingTrip.getSegmentList());
+        // Update existing entity properties
+        existingTrip.setTripName(tripRequest.getTripName());
+        existingTrip.setTripDescription(tripRequest.getTripDescription());
+        existingTrip.setTripDate(tripRequest.getTripDate());
+        existingTrip.setTripStatus(tripRequest.getTripStatus());
 
-        // Save updated trip
-        Trip saved = tripRepository.save(updatedTrip);
+        // Save the updated entity
+        Trip saved = tripRepository.save(existingTrip);
 
         return Optional.of(TripResponse.fromTrip(saved));
     }

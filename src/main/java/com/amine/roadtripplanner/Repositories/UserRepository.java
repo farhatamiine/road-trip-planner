@@ -1,5 +1,6 @@
 package com.amine.roadtripplanner.Repositories;
 
+import com.amine.roadtripplanner.Entities.Trip;
 import com.amine.roadtripplanner.Entities.User;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -16,4 +17,6 @@ public interface UserRepository extends MongoRepository<User, ObjectId> {
     Boolean existsByEmail(String email);
 
     Optional<User> findUserByEmail(String email);
+
+    boolean existsByUserIdAndTripListContaining(ObjectId userId, Trip trip);
 }
