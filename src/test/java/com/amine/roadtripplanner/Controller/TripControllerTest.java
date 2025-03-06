@@ -24,10 +24,10 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -95,27 +95,22 @@ class TripControllerTest {
     void shouldNotCreateTripWhenValidationError() throws Exception {
         //Arrange
 
-        savedTrip.setTripDescription("hello");
+        tripRequest.setTripDescription("he");
 
         when(tripPlanningService.saveNewTrip(any(TripRequest.class)))
                 .thenReturn(savedTrip);
         //Act
         mvc.perform(post("/api/trips").contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(tripRequest)))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.tripDescription.tripId").value(tripId.toString()))
-                .andExpect(jsonPath("$.data.tripDate").value(LocalDate.of(2025, 5, 20).toString()))
-                .andExpect(jsonPath("$.data.tripDescription").value(tripRequest.getTripDescription()))
-                .andExpect(jsonPath("$.success").value(true))
-        ;
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.error.code").value("VALIDATION_ERROR"));
 
         //Assert
-        verify(tripPlanningService).saveNewTrip(any(TripRequest.class));
-    }
-
-    @Test
-    void deleteTrip() {
+        verify(tripPlanningService, never()).saveNewTrip(any(TripRequest.class));
     }
 
     @Test
@@ -160,14 +155,6 @@ class TripControllerTest {
                 .andExpect(jsonPath("$.success").value("false"));
 
         verify(tripPlanningService).getTripById(eq(tripId));
-    }
-
-    @Test
-    void updateTrip() {
-    }
-
-    @Test
-    void partialUpdateTrip() {
     }
 
 

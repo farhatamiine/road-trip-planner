@@ -1,7 +1,6 @@
 package com.amine.roadtripplanner.Dto.request;
 
 import com.amine.roadtripplanner.Entities.Trip;
-import com.amine.roadtripplanner.annotation.DateFormatValidator.ValidDateFormat;
 import com.amine.roadtripplanner.enums.TripStatus;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -26,7 +25,6 @@ public class TripRequest {
 
     @NotNull(message = "Trip date is required")
     @Future(message = "Trip date must be in the future")
-    @ValidDateFormat
     private LocalDate tripDate;
 
     private TripStatus tripStatus = TripStatus.PLANNED;

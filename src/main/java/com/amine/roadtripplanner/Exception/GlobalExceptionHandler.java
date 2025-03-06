@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,6 +39,28 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ApiResponseWrapper<?>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        String errorMessage = ex.getMessage();
+
+        // Check for date parsing issues
+        if (errorMessage.contains("LocalDate") && errorMessage.contains("DateTimeParseException")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponseWrapper.error(
+                            "Invalid date format or value",
+                            "INVALID_DATE",
+                            "Please provide a valid date in yyyy-MM-dd format"));
+        }
+
+        // Generic JSON parsing error
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponseWrapper.error(
+                        "Invalid request format",
+                        "INVALID_REQUEST_FORMAT",
+                        "Please check your JSON syntax and data types"));
     }
 
 
