@@ -1,4 +1,4 @@
-package com.amine.roadtripplanner.Util;
+package com.amine.roadtripplanner.annotation.DateRangeValidator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

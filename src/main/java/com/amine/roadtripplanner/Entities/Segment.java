@@ -1,6 +1,6 @@
 package com.amine.roadtripplanner.Entities;
 
-import com.amine.roadtripplanner.Util.ValidDateRange;
+import com.amine.roadtripplanner.annotation.DateRangeValidator.ValidDateRange;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -20,10 +20,10 @@ import java.time.LocalDateTime;
 
 @Document(collection = "segments")
 @Data
-@ValidDateRange
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ValidDateRange
 public class Segment {
     @Id
     private ObjectId segmentId;

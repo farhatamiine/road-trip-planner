@@ -1,6 +1,8 @@
 package com.amine.roadtripplanner.Dto.request;
 
 import com.amine.roadtripplanner.Entities.Trip;
+import com.amine.roadtripplanner.annotation.DateFormatValidator.ValidDateFormat;
+import com.amine.roadtripplanner.enums.TripStatus;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,7 +26,10 @@ public class TripRequest {
 
     @NotNull(message = "Trip date is required")
     @Future(message = "Trip date must be in the future")
+    @ValidDateFormat
     private LocalDate tripDate;
+
+    private TripStatus tripStatus = TripStatus.PLANNED;
 
 
     public static Trip convertToEntity(TripRequest tripRequest) {
@@ -32,6 +37,7 @@ public class TripRequest {
                 .tripDate(tripRequest.getTripDate())
                 .tripDescription(tripRequest.getTripDescription())
                 .tripName(tripRequest.getTripName())
+                .tripStatus(tripRequest.getTripStatus())
                 .build();
     }
 }
