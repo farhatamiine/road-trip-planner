@@ -63,6 +63,23 @@ public class GlobalExceptionHandler {
                         "Please check your JSON syntax and data types"));
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ApiResponseWrapper<?>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        String errorCode = "RESOURCE_NOT_FOUND";
+
+        // If we have resource type information, make the error code more specific
+        if (ex.getResourceType() != null) {
+            errorCode = ex.getResourceType().toUpperCase() + "_NOT_FOUND";
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponseWrapper.error(
+                        "Resource not found",
+                        errorCode,
+                        ex.getMessage()));
+    }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
