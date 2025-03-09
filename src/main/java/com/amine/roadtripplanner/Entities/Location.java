@@ -15,7 +15,6 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "locations")
@@ -33,11 +32,11 @@ public class Location {
     private String country;
 
     @DBRef(lazy = true)
-    @Builder.Default
-    private final List<Accommodation> accommodations = new ArrayList<>();
+
+    private List<Accommodation> accommodations;
     @DBRef(lazy = true)
-    @Builder.Default
-    private final List<Interest> interests = new ArrayList<>();
+
+    private List<Interest> interests;
 
     private Double latitude;
     private Double longitude;
